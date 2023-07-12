@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
-
 import com.gamelist.gameslist.dto.GameDTO;
 import com.gamelist.gameslist.dto.GameMinDTO;
 import com.gamelist.gameslist.entities.Game;
 import com.gamelist.gameslist.repositories.GameRepository;
+import com.gamelist.gameslist.projections.GameMinProjection;
 
 @Service
 public class GameService {
@@ -27,5 +27,11 @@ public class GameService {
 	public List<GameMinDTO> findAll() {
 		List<Game> result = gameRepository.findAll();
 		return result.stream().map(GameMinDTO::new).toList();
+	}
+	
+	@Transactional(readOnly = true)
+	public List<GameMinDTO> findByGameList(Long listId) {
+		List<GameMinProjection> games = gameRepository.searchByList(listId);
+		return games.stream().map(GameMinDTO::new).toList();
 	}
 }
